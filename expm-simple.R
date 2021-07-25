@@ -58,13 +58,14 @@ expm.poisson <- function (A,n=5)
     diag(P) <- 1-dA/dmax
     nscales <- max(0, ceiling(log2(dmax) - log2(.2)))  # see above
     t <- dmax/2^(nscales)
-    Pk <- exp(-t) * t * P
+    Pk <- t * P
     expA <- Pk
-    diag(expA) <- exp(-t) + diag(expA)  # identity
+    diag(expA) <- 1 + diag(expA)  # identity
     for (k in 2:n) {
         Pk <- (t/k) * P%*%Pk
         expA <- expA + Pk
     }
+    expA <- expA * exp(-t)
     while (nscales>0) {
         expA <- expA %*% expA
         nscales <- nscales-1
